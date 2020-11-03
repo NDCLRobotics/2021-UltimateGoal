@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.Range;
+import java.lang.StrictMath;
 
 
 @TeleOp(name="SportTele", group="Interactive Opmode")
@@ -77,54 +78,41 @@ public class yeetV2ElectricBoogaloo extends OpMode
         double panPower = powerScale + 0.2;
 
         // messages displayed on the phone while running
-        telemetry.addData("Working. Last Updated: never lol ex dee");
-        telemetry.addData("Power Scale equals: " + powerScale);
-        telemetry.addData("Launch Power Scale equals: " + launchPowerScale);
+        telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
+        telemetry.addData("say:", "Power Scale equals: " + powerScale);
+        telemetry.addData("say:", "Launch Power Scale equals: " + launchPowerScale);
 
         // increase or decrease powerScale
-        if (gamepad1.dpad_up && !powerSwitching)
-        {
+        if (gamepad1.dpad_up && !powerSwitching) {
             powerSwitching = true;
             powerScale += 0.25;
         }
-        if (gamepad1.dpad_down && !powerSwitching)
-        {
+        if (gamepad1.dpad_down && !powerSwitching) {
             powerSwitching = true;
             powerScale -= 0.25;
         }
-        if (!gamepad1.dpad_down && !gamepad1.dpad_up && powerSwitching)
-        {
+        if (!gamepad1.dpad_down && !gamepad1.dpad_up && powerSwitching) {
             powerSwitching = false;
         }
 
         // clamp powerScale and panPower to [0.25, 1.0]
-        if (powerScale > 1.0)
-        {
+        if (powerScale > 1.0) {
             powerScale = 1.0;
-    } else if (powerScale < 0.25)
-        {
+        } else if (powerScale < 0.25) {
             powerScale = 0.25;
         }
 
-        if (panPower > 1.0)
-        {
+        if (panPower > 1.0) {
             panPower = 1.0;
-        } else if (panPower < 0.25)
-        {
+        } else if (panPower < 0.25) {
             panPower = 0.25;
         }
 
-        // switch launch power from half to full and vice versa
-        if (gamepad1.right_trigger && !launchingSwitching)
-        {
-            launchingSwitching = true;
-            if (launchPowerScale == 1.0)
-                launchPowerScale = 0.5;
-            else
-                launchPowerScale = 1.0;
-        }
-        if (!gamepad1.right_trigger && launchingSwitching)
-            launchingSwitching = false;
+        // set launcher power to double if right trigger is being held
+        if (gamepad1.right_trigger > 0)
+            launchPowerScale = 1.0;
+        else
+            launchPowerScale = 0.5;
 
 /* inverse controls - unsure if using
         // activation and deactivation of inverse controls
@@ -134,50 +122,50 @@ public class yeetV2ElectricBoogaloo extends OpMode
         } */
 
         // linking the drive commands to the controller
-        double drive = gamepad1.left_stick_y;
+        double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        double pan = gamepad1.left_stick_x;
-        double launching = gamepad1.right_trigger;
+        double pan = -gamepad1.left_stick_x;
 
-        if (gamepad1.dpad_right && gamepad1.left_stick_x == 0)
-        {
+        if (gamepad1.dpad_right && gamepad1.left_stick_x == 0) {
             pan = 1;
         }
-        if (gamepad1.dpad_left && gamepad1.left_stick_x == 0)
-        {
+        if (gamepad1.dpad_left && gamepad1.left_stick_x == 0) {
             pan = -1;
         }
-        if (!gamepad1.dpad_left && !gamepad1.dpad_right && gamepad1.left_stick_x == 0)
-        {
+        if (!gamepad1.dpad_left && !gamepad1.dpad_right && gamepad1.left_stick_x == 0) {
             pan = 0;
+        }
 
-        // panning, based on original code for two motor turning, capped at -1 and 1
-        //if (!inverseControls)
-        //{
-        frontLeftPan = Range.clip(drive + pan, -1.0, 1.0);
-        frontRightPan = Range.clip(drive - pan, -1.0, 1.0);
-        backLeftPan = Range.clip(drive + pan, -1.0, 1.0);
-        backRightPan = Range.clip(drive - pan, -1.0, 1.0);
-        frontLeftMotor.setPower(panPower * frontLeftPan);
-        frontRightMotor.setPower(panPower * frontRightPan);
-        backLeftMotor.setPower(panPower * backLeftPan);
-        backRightMotor.setPower(panPower * backRightPan);
+            // panning, based on original code for two motor turning, capped at -1 and 1
+            //if (!inverseControls)
+            //{
+        if ((gamepad1.dpad_left || gamepad1.dpad_right) || StrictMath.abs(gamepad1.left_stick_x) > StrictMath.abs(gamepad1.right_stick_x)) {
+            frontLeftPan = Range.clip(drive - pan, -1.0, 1.0);
+            frontRightPan = Range.clip(drive + pan, -1.0, 1.0);
+            backLeftPan = Range.clip(-drive - pan, -1.0, 1.0);
+            backRightPan = Range.clip(-drive + pan, -1.0, 1.0);
+            frontLeftMotor.setPower(panPower * frontLeftPan);
+            frontRightMotor.setPower(panPower * frontRightPan);
+            backLeftMotor.setPower(panPower * backLeftPan);
+            backRightMotor.setPower(panPower * backRightPan);
+        }
+         // turning, capped at -1 and 1
+        else
+        {
+            frontLeftPower = Range.clip(drive + turn, -1.0, 1.0);
+            frontRightPower = Range.clip(drive - turn, -1.0, 1.0);
+            backLeftPower = Range.clip(-drive - turn, -1.0, 1.0);
+            backRightPower = Range.clip(-drive + turn, -1.0, 1.0);
+            frontLeftMotor.setPower(powerScale * frontLeftPower);
+            frontRightMotor.setPower(powerScale * frontRightPower);
+            backLeftMotor.setPower(powerScale * backLeftPower);
+            backRightMotor.setPower(powerScale * backRightPower);
+        }
 
-        // turning, capped at -1 and 1
-        frontLeftPower = Range.clip(drive + turn, -1.0, 1.0);
-        frontRightPower = Range.clip(drive - turn, -1.0, 1.0);
-        backLeftPower = Range.clip(drive - turn, -1.0, 1.0);
-        backRightPower = Range.clip(drive + turn, -1.0, 1.0);
-        frontLeftMotor.setPower(powerScale * frontLeftPower);
-        frontRightMotor.setPower(powerScale * frontRightPower);
-        backLeftMotor.setPower(powerScale * backLeftPower);
-        backRightMotor.setPower(powerScale * backRightPower);
+         // launching, always on
+         launchingMotor.setPower(launchPowerScale);
 
-        // launching, capped at -1 and 1
-        launchingPower = Range.clip(launching, -1.0, 1.0);
-        launchingMotor.setPower(launchPowerScale * launchingPower);
-
-        //}
+            //}
    /*   if (inverseControls)
         {
             frontLeftPan = Range.clip(-drive - pan, -1.0, 1.0);
@@ -200,12 +188,17 @@ public class yeetV2ElectricBoogaloo extends OpMode
             backRightMotor.setPower(powerScale * backRightPower);
         }*/
 
-    }
+        }
 
     @Override
     public void stop()
     {
         // pls do, kind sir
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+        launchingMotor.setPower(0);
     }
 
 }

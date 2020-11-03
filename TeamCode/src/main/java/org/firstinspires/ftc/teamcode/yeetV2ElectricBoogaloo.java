@@ -124,7 +124,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         // linking the drive commands to the controller
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        double pan = -gamepad1.left_stick_x;
+        double pan = gamepad1.left_stick_x;
 
         if (gamepad1.dpad_right && gamepad1.left_stick_x == 0) {
             pan = 1;

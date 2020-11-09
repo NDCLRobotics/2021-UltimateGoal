@@ -18,16 +18,21 @@ public class yeetV2ElectricBoogaloo extends OpMode
     private DcMotor frontRightMotor = null;
     private DcMotor backLeftMotor = null;
     private DcMotor backRightMotor = null;
+    private CRServo ringServo;
+    private CRServo flipServo;
+    private CRServo toggleServo;
 
     // control hub 2
     private DcMotor launchingMotor = null;
 
     // switching is a workaround to allow only one frame input
-    private boolean switching = false;
     private boolean powerSwitching = false;
-    private boolean launchingSwitching = false;
+    private boolean toggleSwitching = false;
     // when activated, the two control sticks will be inverted - currently unused
     private boolean inverseControls = false;
+
+    // servo related booleans
+    private boolean toggleBool = false;
 
     // scale down power from max for driving
     private double powerScale = 0.75;
@@ -42,6 +47,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
         frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        ringServo = hardwareMap.crservo.get("ringServo");
+        flipServo = hardwareMap.crservo.get("flipServo");
+        toggleServo = hardwareMap.crservo.get("toggleServo");
 
         // control hub 2
         launchingMotor = hardwareMap.dcMotor.get("launchingMotor");
@@ -52,7 +60,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
         launchingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // message displayed on the phone before initialization
@@ -114,13 +121,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
         else
             launchPowerScale = 0.5;
 
-/* inverse controls - unsure if using
-        // activation and deactivation of inverse controls
-        if (gamepad1.y)
-        {
-            inverseControls = !inverseControls;
-        } */
-
         // linking the drive commands to the controller
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
@@ -150,8 +150,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
             backRightMotor.setPower(panPower * backRightPan);
         }
          // turning, capped at -1 and 1
-        else
-        {
+        else {
             frontLeftPower = Range.clip(drive + turn, -1.0, 1.0);
             frontRightPower = Range.clip(drive - turn, -1.0, 1.0);
             backLeftPower = Range.clip(-drive - turn, -1.0, 1.0);
@@ -162,33 +161,35 @@ public class yeetV2ElectricBoogaloo extends OpMode
             backRightMotor.setPower(powerScale * backRightPower);
         }
 
-         // launching, always on
+        // launching, always on
          launchingMotor.setPower(launchPowerScale);
 
-            //}
-   /*   if (inverseControls)
-        {
-            frontLeftPan = Range.clip(-drive - pan, -1.0, 1.0);
-            frontRightPan = Range.clip(-drive + pan, -1.0, 1.0);
-            backLeftPan = Range.clip(-drive - pan, -1.0, 1.0);
-            backRightPan = Range.clip(-drive + pan, -1.0, 1.0);
-            frontLeftMotor.setPower(panPower * frontLeftPan);
-            frontRightMotor.setPower(panPower * frontRightPan);
-            backLeftMotor.setPower(panPower * backLeftPan);
-            backRightMotor.setPower(panPower * backRightPan);
+        // toggleServo
+        if (gamepad1.left_trigger > 0 && !toggleSwitching)
+            toggleBool = !toggleBool;
+            toggleSwitching = true;
+        if (gamepad1.left_trigger <= 0 && toggleSwitching)
+            toggleSwitching = false;
 
-            // turning, capped at 1 and -1
-            frontLeftPower = Range.clip(-drive + turn, -1.0, 1.0);
-            frontRightPower = Range.clip(-drive - turn, -1.0, 1.0);
-            backLeftPower = Range.clip(-drive - turn, -1.0, 1.0);
-            backRightPower = Range.clip(-drive + turn, -1.0, 1.0);
-            frontLeftMotor.setPower(powerScale * frontLeftPower);
-            frontRightMotor.setPower(powerScale * frontRightPower);
-            backLeftMotor.setPower(powerScale * backLeftPower);
-            backRightMotor.setPower(powerScale * backRightPower);
-        }*/
+        if (toggleBool)
+            toggleServo.setPower(0.5);
+        else
+            toggleServo.setPower(-0.5);
 
+        // flipServo and ringServo
+        if (gamepad1.b) {
+            if (gamepad1.left_bumper)
+                flipServo.setPower(0.15);
+            else if (gamepad1.right_bumper)
+                flipServo.setPower(-0.15);
         }
+        else {
+            if (gamepad1.left_bumper)
+                ringServo.setPower(0.15);
+            else if (gamepad1.right_bumper)
+                ringServo.setPower(-0.15);
+        }
+    }
 
     @Override
     public void stop()

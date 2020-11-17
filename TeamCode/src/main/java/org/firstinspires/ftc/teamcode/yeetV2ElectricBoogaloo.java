@@ -177,17 +177,25 @@ public class yeetV2ElectricBoogaloo extends OpMode
             toggleServo.setPower(-0.5);
 
         // flipServo and ringServo
-        if (gamepad1.b) {
+        if (gamepad1.b)
+        {
             if (gamepad1.left_bumper)
-                flipServo.setPower(0.15);
-            else if (gamepad1.right_bumper)
-                flipServo.setPower(-0.15);
+                flipServo.setPower(0.30);
+            else
+            {
+                if (gamepad1.right_bumper)
+                    flipServo.setPower(-0.30);
+            }
         }
-        else {
+        else
+        {
             if (gamepad1.left_bumper)
-                ringServo.setPower(0.15);
-            else if (gamepad1.right_bumper)
-                ringServo.setPower(-0.15);
+                ringServo.setPower(0.25);
+            else
+            {
+                if (gamepad1.right_bumper)
+                    ringServo.setPower(-0.25);
+            }
         }
     }
 

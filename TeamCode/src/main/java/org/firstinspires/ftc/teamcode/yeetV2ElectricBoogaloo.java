@@ -84,10 +84,13 @@ public class yeetV2ElectricBoogaloo extends OpMode
         // scale down power from max for panning
         double panPower = powerScale + 0.2;
 
+        double tempTestingVariable = 0.0;
+
         // messages displayed on the phone while running
         telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
         telemetry.addData("say:", "Launch Power Scale equals: " + launchPowerScale);
+        telemetry.addData("say:", "Flip Servo at: " + tempTestingVariable);
 
         // increase or decrease powerScale
         if (gamepad1.dpad_up && !powerSwitching) {
@@ -117,7 +120,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // set launcher power to double if right trigger is being held
         if (gamepad1.right_trigger > 0)
-            launchPowerScale = 1.0;
+            launchPowerScale = 0.9;
         else
             launchPowerScale = 0.5;
 
@@ -177,24 +180,22 @@ public class yeetV2ElectricBoogaloo extends OpMode
             toggleServo.setPower(-0.5);
 
         // flipServo and ringServo
-        if (gamepad1.b)
-        {
-            if (gamepad1.left_bumper)
-                flipServo.setPower(0.30);
-            else
-            {
-                if (gamepad1.right_bumper)
-                    flipServo.setPower(-0.30);
+        if (gamepad1.b) {
+            if (gamepad1.left_bumper) {
+                flipServo.setPower(-0.05);
+            }
+            else {
+                if (gamepad1.right_bumper) {
+                    flipServo.setPower(0.1);
+                }
             }
         }
-        else
-        {
+        else {
             if (gamepad1.left_bumper)
-                ringServo.setPower(0.25);
-            else
-            {
+                ringServo.setPower(0.15);
+            else {
                 if (gamepad1.right_bumper)
-                    ringServo.setPower(-0.25);
+                    ringServo.setPower(-0.15);
             }
         }
     }

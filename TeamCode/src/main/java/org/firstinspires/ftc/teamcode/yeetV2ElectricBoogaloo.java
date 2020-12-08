@@ -18,9 +18,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
     private DcMotor frontRightMotor = null;
     private DcMotor backLeftMotor = null;
     private DcMotor backRightMotor = null;
-    private CRServo ringServo;
-    private CRServo flipServo;
-    private CRServo toggleServo;
+    private CRServo ringServo = null;
+    private CRServo flipServo = null;
+    private CRServo toggleServo = null;
 
     // control hub 2
     private DcMotor launchingMotor = null;
@@ -179,23 +179,34 @@ public class yeetV2ElectricBoogaloo extends OpMode
         else
             toggleServo.setPower(-0.5);
 
+
+
+
         // flipServo and ringServo
-        if (gamepad1.b) {
-            if (gamepad1.left_bumper) {
-                flipServo.setPower(-0.05);
+        if (gamepad1.b)
+        {
+            if (gamepad1.left_bumper) // lifted claw
+            {
+                flipServo.setPower(-0.25);
+                telemetry.addData("say:", "A");
             }
-            else {
-                if (gamepad1.right_bumper) {
-                    flipServo.setPower(0.1);
-                }
+            if (gamepad1.right_bumper) // lowered claw
+            {
+                flipServo.setPower(-0.05);
+                telemetry.addData("say:", "B");
             }
         }
-        else {
-            if (gamepad1.left_bumper)
-                ringServo.setPower(0.15);
-            else {
-                if (gamepad1.right_bumper)
-                    ringServo.setPower(-0.15);
+        if (!gamepad1.b)
+        {
+            if (gamepad1.left_bumper) // opened claw?
+            {
+                ringServo.setPower(-1.0);
+                telemetry.addData("say:", "C");
+            }
+            if (gamepad1.right_bumper) // closed claw?
+            {
+                ringServo.setPower(1.0);
+                telemetry.addData("say:", "D");
             }
         }
     }

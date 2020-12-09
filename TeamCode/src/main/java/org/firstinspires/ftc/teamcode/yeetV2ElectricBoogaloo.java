@@ -179,9 +179,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
         else
             toggleServo.setPower(-0.5);
 
-
-
-
         // flipServo and ringServo
         if (gamepad1.b)
         {
@@ -200,12 +197,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
         {
             if (gamepad1.left_bumper) // opened claw?
             {
-                ringServo.setPower(-1.0);
+                ringServo.setPower(-0.25);
                 telemetry.addData("say:", "C");
             }
             if (gamepad1.right_bumper) // closed claw?
             {
-                ringServo.setPower(1.0);
+                ringServo.setPower(-0.05);
                 telemetry.addData("say:", "D");
             }
         }

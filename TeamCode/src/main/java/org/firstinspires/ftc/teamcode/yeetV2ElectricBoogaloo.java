@@ -47,8 +47,8 @@ public class yeetV2ElectricBoogaloo extends OpMode
         frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-        ringServo = hardwareMap.crservo.get("ringServo");
-        flipServo = hardwareMap.crservo.get("flipServo");
+        ringServo = hardwareMap.crservo.get("ringServo"); // ringservo originally
+        flipServo = hardwareMap.crservo.get("flipServo"); // flipservo originally
         toggleServo = hardwareMap.crservo.get("toggleServo");
 
         // control hub 2
@@ -165,7 +165,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
 
         // launching, always on
-         launchingMotor.setPower(launchPowerScale);
+        //launchingMotor.setPower(launchPowerScale); // TEMP DISABLED
 
         // toggleServo
         if (gamepad1.left_trigger > 0 && !toggleSwitching)
@@ -197,12 +197,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
         {
             if (gamepad1.left_bumper) // opened claw?
             {
-                ringServo.setPower(-0.25);
+                ringServo.setPower(-0.96);
                 telemetry.addData("say:", "C");
             }
             if (gamepad1.right_bumper) // closed claw?
             {
-                ringServo.setPower(-0.05);
+                ringServo.setPower(-0.875);
                 telemetry.addData("say:", "D");
             }
         }

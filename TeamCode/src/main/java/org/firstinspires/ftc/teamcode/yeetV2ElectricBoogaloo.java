@@ -40,6 +40,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // scale down power from max for driving
     private double powerScale = 0.75;
     private double launchPowerScale = 0.5;
+    private double highLaunchPowerScale = 0.9;
 
 
 
@@ -193,46 +194,23 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }*/
         if (gamepad1.right_trigger > 0)
         {
-            if (!launchPresetSwitching)
-            {
-                launchPowerScale = 0.9;
-                launchPresetSwitching = true;
-            }
-            else
-            {
-                if (gamepad1.dpad_left && !launchSwitching)
-                {
-                    launchPowerScale += 0.1;
-                    launchSwitching = true;
-                }
-                else if (gamepad1.dpad_right && !launchSwitching)
-                {
-                    launchPowerScale -= 0.1;
-                    launchSwitching = true;
-                }
-                else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
-                    launchSwitching = false;
-            }
-        }
-        else if (launchPresetSwitching)
-        {
-            launchPowerScale = 0.5;
-            launchPresetSwitching = false;
-        }
+            launchPowerScale = highLaunchPowerScale;
         else
         {
-            if (gamepad1.dpad_left && !launchSwitching)
-            {
-                launchPowerScale += 0.1;
-                launchSwitching = true;
-            }
-            else if (gamepad1.dpad_right && !launchSwitching)
-            {
-                launchPowerScale -= 0.1;
-                launchSwitching = true;
-            }
-            else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
-                launchSwitching = false;
+            launchPowerScale = 0.5;
+        }
+        if (gamepad1.dpad_left && !launchSwitching)
+        {
+            highLaunchPowerScale += 0.1;
+            launchSwitching = true;
+        }
+        else if (gamepad1.dpad_right && !launchSwitching)
+        {
+            highLaunchPowerScale -= 0.1;
+            launchSwitching = true;
+        }
+        else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
+            launchSwitching = false;
         }
         // clamp launchScale to [0.1,1.0]
         if (launchPowerScale > 1.0)

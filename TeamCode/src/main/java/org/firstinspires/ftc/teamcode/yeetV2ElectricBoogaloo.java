@@ -195,6 +195,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         if (gamepad1.right_trigger > 0)
         {
             launchPowerScale = highLaunchPowerScale;
+        }
         else
         {
             launchPowerScale = 0.5;
@@ -210,6 +211,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
             launchSwitching = true;
         }
         else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
+        {
             launchSwitching = false;
         }
         // clamp launchScale to [0.1,1.0]

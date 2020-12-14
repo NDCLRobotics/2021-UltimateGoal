@@ -168,7 +168,10 @@ public class yeetV2ElectricBoogaloo extends OpMode
             }
         }
         else
+        {
             launchPowerScale = 0.5;
+            launchSwitching = false;
+        }
 
         launchingMotor.setPower(launchPowerScale);
 

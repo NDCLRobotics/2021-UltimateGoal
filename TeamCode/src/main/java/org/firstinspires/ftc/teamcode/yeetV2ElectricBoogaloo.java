@@ -28,7 +28,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // switching is a workaround to allow only one frame input
     private boolean powerSwitching = false;
     private boolean toggleSwitching = false;
+    // launch motor related booleans
     private boolean launchSwitching = false;
+    private boolean launchPresetSwitching = false;
     // when activated, the two control sticks will be inverted - currently unused
     private boolean inverseControls = false;
 
@@ -97,28 +99,35 @@ public class yeetV2ElectricBoogaloo extends OpMode
         telemetry.addData("say:", "Flip Servo at: " + tempTestingVariable);
 
         // increase or decrease powerScale
-        if (gamepad1.dpad_up && !powerSwitching) {
+        if (gamepad1.dpad_up && !powerSwitching)
+        {
             powerSwitching = true;
             powerScale += 0.25;
         }
-        if (gamepad1.dpad_down && !powerSwitching) {
+        else if (gamepad1.dpad_down && !powerSwitching)
+        {
             powerSwitching = true;
             powerScale -= 0.25;
         }
-        if (!gamepad1.dpad_down && !gamepad1.dpad_up && powerSwitching) {
+        else if (!gamepad1.dpad_down && !gamepad1.dpad_up && powerSwitching)
+        {
             powerSwitching = false;
         }
 
         // clamp powerScale and panPower to [0.25, 1.0]
-        if (powerScale > 1.0) {
+        if (powerScale > 1.0)
+        {
             powerScale = 1.0;
-        } else if (powerScale < 0.25) {
+        }
+        else if (powerScale < 0.25)
+        {
             powerScale = 0.25;
         }
 
         if (panPower > 1.0) {
             panPower = 1.0;
-        } else if (panPower < 0.25) {
+        }
+        else if (panPower < 0.25) {
             panPower = 0.25;
         }
 
@@ -152,7 +161,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // launching motor
         // set launcher power to double if right trigger is being held
-        if (gamepad1.right_trigger > 0)
+        /*if (gamepad1.right_trigger > 0)
         {
             if (!launchSwitching)
             {
@@ -169,8 +178,70 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
         else
         {
+            if (!launchSwitching)
+            {
+                launchPowerScale = 0.5;
+                launchSwitching = true;
+            }
+            else
+            {
+                if (gamepad1.dpad_left)
+                    launchPowerScale += 0.1;
+                else if (gamepad1.dpad_right)
+                    launchPowerScale -= 0.1;
+            }
+        }*/
+        if (gamepad1.right_trigger > 0)
+        {
+            if (!launchPresetSwitching)
+            {
+                launchPowerScale = 0.9;
+                launchPresetSwitching = true;
+            }
+            else
+            {
+                if (gamepad1.dpad_left && !launchSwitching)
+                {
+                    launchPowerScale += 0.1;
+                    launchSwitching = true;
+                }
+                else if (gamepad1.dpad_right && !launchSwitching)
+                {
+                    launchPowerScale -= 0.1;
+                    launchSwitching = true;
+                }
+                else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
+                    launchSwitching = false;
+            }
+        }
+        else if (gamepad1.right_trigger == 0 && launchPresetSwitching)
+        {
             launchPowerScale = 0.5;
-            launchSwitching = false;
+            launchPresetSwitching = false;
+        }
+        else
+        {
+            if (gamepad1.dpad_left && !launchSwitching)
+            {
+                launchPowerScale += 0.1;
+                launchSwitching = true;
+            }
+            else if (gamepad1.dpad_right && !launchSwitching)
+            {
+                launchPowerScale -= 0.1;
+                launchSwitching = true;
+            }
+            else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
+                launchSwitching = false;
+        }
+        // clamp launchScale to [0.1,1.0]
+        if (launchPowerScale > 1.0)
+        {
+            launchPowerScale = 1.0;
+        }
+        else if (launchPowerScale < 0.1)
+        {
+            launchPowerScale = 0.1;
         }
 
         launchingMotor.setPower(launchPowerScale);

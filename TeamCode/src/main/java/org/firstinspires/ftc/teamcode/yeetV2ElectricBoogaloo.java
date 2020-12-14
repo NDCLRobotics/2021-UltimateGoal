@@ -214,7 +214,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
                     launchSwitching = false;
             }
         }
-        else if (gamepad1.right_trigger == 0 && launchPresetSwitching)
+        else if (launchPresetSwitching)
         {
             launchPowerScale = 0.5;
             launchPresetSwitching = false;

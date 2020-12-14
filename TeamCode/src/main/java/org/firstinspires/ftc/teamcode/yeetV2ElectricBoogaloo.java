@@ -28,6 +28,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // switching is a workaround to allow only one frame input
     private boolean powerSwitching = false;
     private boolean toggleSwitching = false;
+    private boolean launchSwitching = false;
     // when activated, the two control sticks will be inverted - currently unused
     private boolean inverseControls = false;
 
@@ -64,6 +65,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // message displayed on the phone before initialization
         telemetry.addData("say: ", "Working, latest updated: never lol");
+
+        // initial claw position
+        ringServo.setPower(0.00);
     }
 
     @Override
@@ -118,30 +122,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
             panPower = 0.25;
         }
 
-        // set launcher power to double if right trigger is being held
-        if (gamepad1.right_trigger > 0)
-            launchPowerScale = 0.9;
-        else
-            launchPowerScale = 0.5;
-
         // linking the drive commands to the controller
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
         double pan = gamepad1.left_stick_x;
 
-        if (gamepad1.dpad_right && gamepad1.left_stick_x == 0) {
-            pan = 1;
-        }
-        if (gamepad1.dpad_left && gamepad1.left_stick_x == 0) {
-            pan = -1;
-        }
-        if (!gamepad1.dpad_left && !gamepad1.dpad_right && gamepad1.left_stick_x == 0) {
-            pan = 0;
-        }
-
-            // panning, based on original code for two motor turning, capped at -1 and 1
-            //if (!inverseControls)
-            //{
+        // panning, capped at -1 and 1
         if ((gamepad1.dpad_left || gamepad1.dpad_right) || StrictMath.abs(gamepad1.left_stick_x) > StrictMath.abs(gamepad1.right_stick_x)) {
             frontLeftPan = Range.clip(drive - pan, -1.0, 1.0);
             frontRightPan = Range.clip(drive + pan, -1.0, 1.0);
@@ -164,8 +150,27 @@ public class yeetV2ElectricBoogaloo extends OpMode
             backRightMotor.setPower(powerScale * backRightPower);
         }
 
-        // launching, always on
-        //launchingMotor.setPower(launchPowerScale); // TEMP DISABLED
+        // launching motor
+        // set launcher power to double if right trigger is being held
+        if (gamepad1.right_trigger > 0)
+        {
+            if (!launchSwitching)
+            {
+                launchPowerScale = 0.9;
+                launchSwitching = true;
+            }
+            else
+            {
+                if (gamepad1.dpad_left)
+                    launchPowerScale += 0.1;
+                else if (gamepad1.dpad_right)
+                    launchPowerScale -= 0.1;
+            }
+        }
+        else
+            launchPowerScale = 0.5;
+
+        launchingMotor.setPower(launchPowerScale);
 
         // toggleServo
         if (gamepad1.left_trigger > 0 && !toggleSwitching)
@@ -197,12 +202,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
         {
             if (gamepad1.left_bumper) // opened claw?
             {
-                ringServo.setPower(-0.96);
+                ringServo.setPower(-0.06);
                 telemetry.addData("say:", "C");
             }
             if (gamepad1.right_bumper) // closed claw?
             {
-                ringServo.setPower(-0.875);
+                ringServo.setPower(0.12);
                 telemetry.addData("say:", "D");
             }
         }

@@ -42,6 +42,16 @@ public class yeetV2ElectricBoogaloo extends OpMode
     private double launchPowerScale = 0.5;
     private double highLaunchPowerScale = 0.9;
 
+    // doubles for driving and panning
+    private double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
+    private double frontLeftPan, frontRightPan, backLeftPan, backRightPan;
+
+    // scale down power from max for panning
+    private double panPower = powerScale + 0.2;
+
+    // temporary variable for testing
+    private double tempTestingVariable = 0.0;
+
 
 
     @Override
@@ -81,22 +91,10 @@ public class yeetV2ElectricBoogaloo extends OpMode
     @Override
     public void loop() {
 
-        // doubles for driving and panning
-        double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
-        double frontLeftPan, frontRightPan, backLeftPan, backRightPan;
-
-        // double for launching
-        double launchingPower;
-
-        // scale down power from max for panning
-        double panPower = powerScale + 0.2;
-
-        double tempTestingVariable = 0.0;
-
         // messages displayed on the phone while running
         telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
-        telemetry.addData("say:", "Launch Power Scale equals: " + launchPowerScale);
+        telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
         telemetry.addData("say:", "Flip Servo at: " + tempTestingVariable);
 
         // increase or decrease powerScale
@@ -202,12 +200,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
         if (gamepad1.dpad_left && !launchSwitching)
         {
-            highLaunchPowerScale += 0.1;
+            highLaunchPowerScale -= 0.1;
             launchSwitching = true;
         }
         else if (gamepad1.dpad_right && !launchSwitching)
         {
-            highLaunchPowerScale -= 0.1;
+            highLaunchPowerScale += 0.1;
             launchSwitching = true;
         }
         else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)

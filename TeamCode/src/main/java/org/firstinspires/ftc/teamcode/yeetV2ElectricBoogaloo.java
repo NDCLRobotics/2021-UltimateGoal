@@ -247,6 +247,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
             wobbleSpeed = -1.0;
         else
             wobbleSpeed = 0.0;
+        wobbleMotor.setPower(wobbleSpeed);
     }
 
     @Override
@@ -258,6 +259,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
         launchingMotor.setPower(0);
+        wobbleMotor.setPower(0);
     }
 
 }

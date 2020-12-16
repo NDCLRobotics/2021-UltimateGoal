@@ -24,6 +24,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
     // control hub 2
     private DcMotor launchingMotor = null;
+    private DcMotor wobbleMotor = null;
 
     // switching is a workaround to allow only one frame input
     private boolean powerSwitching = false;
@@ -49,6 +50,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // scale down power from max for panning
     private double panPower = powerScale + 0.2;
 
+    // doubles for wobble motor
+    private double wobbleSpeed;
+
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
 
@@ -67,6 +71,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // control hub 2
         launchingMotor = hardwareMap.dcMotor.get("launchingMotor");
+        wobbleMotor = hardwareMap.dcMotor.get("wobbleMotor");
 
 
         //setting the direction for each motor
@@ -75,6 +80,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         launchingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        wobbleMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // message displayed on the phone before initialization
         telemetry.addData("say: ", "Working, latest updated: never lol");
@@ -160,36 +166,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // launching motor
         // set launcher power to double if right trigger is being held
-        /*if (gamepad1.right_trigger > 0)
-        {
-            if (!launchSwitching)
-            {
-                launchPowerScale = 0.9;
-                launchSwitching = true;
-            }
-            else
-            {
-                if (gamepad1.dpad_left)
-                    launchPowerScale += 0.1;
-                else if (gamepad1.dpad_right)
-                    launchPowerScale -= 0.1;
-            }
-        }
-        else
-        {
-            if (!launchSwitching)
-            {
-                launchPowerScale = 0.5;
-                launchSwitching = true;
-            }
-            else
-            {
-                if (gamepad1.dpad_left)
-                    launchPowerScale += 0.1;
-                else if (gamepad1.dpad_right)
-                    launchPowerScale -= 0.1;
-            }
-        }*/
         if (gamepad1.right_trigger > 0)
         {
             launchPowerScale = highLaunchPowerScale;
@@ -263,6 +239,14 @@ public class yeetV2ElectricBoogaloo extends OpMode
                 telemetry.addData("say:", "D");
             }
         }
+
+        // wobble motor
+        if (gamepad1.start)
+            wobbleSpeed = 1.0;
+        else if (gamepad1.back)
+            wobbleSpeed = -1.0;
+        else
+            wobbleSpeed = 0.0;
     }
 
     @Override

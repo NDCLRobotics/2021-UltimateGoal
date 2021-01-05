@@ -58,6 +58,8 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
 
+    private int frameCount; // for debugging
+
 
 
     @Override
@@ -90,6 +92,8 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // initial claw position
         ringServo.setPower(0.00);
+
+        frameCount = 0;
     }
 
     @Override
@@ -100,12 +104,15 @@ public class yeetV2ElectricBoogaloo extends OpMode
     @Override
     public void loop() {
 
+        frameCount += 1;
         // messages displayed on the phone while running
         telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
+        telemetry.addData("say:", "Frame " + frameCount);
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
         telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
         telemetry.addData("say:", "Flip Servo at: " + tempTestingVariable);
         telemetry.addData("say:", "Current wobble motor position: " + wobbleMotor.getCurrentPosition());
+        telemetry.addData("say:", "Wobble motor zero at: " + wobbleMotorZero);
 
         // increase or decrease powerScale
         if (gamepad1.dpad_up && !powerSwitching)
@@ -245,11 +252,11 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
 
         // wobble motor
-        if (gamepad1.start && wobbleMotor.getCurrentPosition() < (wobbleMotorZero + wobbleLimit))
+        if (gamepad1.start && wobbleMotor.getCurrentPosition() < wobbleMotorZero)
             wobbleMotor.setPower(0.75);
-        else if (gamepad1.back && wobbleMotor.getCurrentPosition() > wobbleMotorZero)
+        if (gamepad1.back && wobbleMotor.getCurrentPosition() > wobbleMotorZero - wobbleLimit)
             wobbleMotor.setPower(-0.75);
-        else
+        if (!gamepad1.start && !gamepad1.back)
             wobbleMotor.setPower(0.0);
         //wobbleMotor.setPower(wobbleSpeed);  //yeet
     }

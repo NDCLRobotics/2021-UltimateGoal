@@ -105,6 +105,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
         telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
         telemetry.addData("say:", "Flip Servo at: " + tempTestingVariable);
+        telemetry.addData("say:", "Current wobble motor position: " + wobbleMotor.getCurrentPosition());
 
         // increase or decrease powerScale
         if (gamepad1.dpad_up && !powerSwitching)

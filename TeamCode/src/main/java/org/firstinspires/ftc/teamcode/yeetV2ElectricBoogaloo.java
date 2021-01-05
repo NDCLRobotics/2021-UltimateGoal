@@ -50,8 +50,10 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // scale down power from max for panning
     private double panPower = powerScale + 0.2;
 
-    // doubles for wobble motor
+    // variables for wobble motor
     private double wobbleSpeed;
+    private int wobbleMotorZero;
+    private int wobbleLimit = 20000;
 
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
@@ -81,6 +83,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         launchingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wobbleMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        wobbleMotorZero = wobbleMotor.getCurrentPosition();
 
         // message displayed on the phone before initialization
         telemetry.addData("say: ", "Working, latest updated: never lol");
@@ -241,9 +244,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
 
         // wobble motor
-        if (gamepad1.start)
+        if (gamepad1.start && !gamepad1.back && wobbleMotor.getCurrentPosition() < (wobbleMotorZero + wobbleLimit))
             wobbleSpeed = 0.75;
-        else if (gamepad1.back)
+        else if (gamepad1.back && !gamepad1.start && wobbleMotor.getCurrentPosition() > wobbleMotorZero)
             wobbleSpeed = -0.75;
         else
             wobbleSpeed = 0.0;

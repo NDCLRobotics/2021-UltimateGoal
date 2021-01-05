@@ -242,9 +242,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // wobble motor
         if (gamepad1.start)
-            wobbleSpeed = 0.5;
+            wobbleSpeed = 0.75;
         else if (gamepad1.back)
-            wobbleSpeed = -0.5;
+            wobbleSpeed = -0.75;
         else
             wobbleSpeed = 0.0;
         wobbleMotor.setPower(wobbleSpeed);  //yeet

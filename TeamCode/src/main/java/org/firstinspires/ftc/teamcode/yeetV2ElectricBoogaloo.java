@@ -55,10 +55,11 @@ public class yeetV2ElectricBoogaloo extends OpMode
     private int wobbleMotorZero;
     private int wobbleLimit = 20000;
 
+    private int lowWobLimit = -15;
+    private int highWobLimit = 65;
+
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
-
-    private int frameCount; // for debugging
 
 
 
@@ -85,6 +86,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         launchingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wobbleMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
         wobbleMotorZero = wobbleMotor.getCurrentPosition();
 
         // message displayed on the phone before initialization
@@ -93,7 +95,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
         // initial claw position
         ringServo.setPower(0.00);
 
-        frameCount = 0;
     }
 
     @Override
@@ -104,15 +105,14 @@ public class yeetV2ElectricBoogaloo extends OpMode
     @Override
     public void loop() {
 
-        frameCount += 1;
         // messages displayed on the phone while running
         telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
-        telemetry.addData("say:", "Frame " + frameCount);
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
         telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
-        telemetry.addData("say:", "Flip Servo at: " + tempTestingVariable);
         telemetry.addData("say:", "Current wobble motor position: " + wobbleMotor.getCurrentPosition());
         telemetry.addData("say:", "Wobble motor zero at: " + wobbleMotorZero);
+        telemetry.addData("say:", "Wobble motor power at: " + wobbleMotor.getPower());
+
 
         // increase or decrease powerScale
         if (gamepad1.dpad_up && !powerSwitching)
@@ -252,12 +252,44 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
 
         // wobble motor
-        if (gamepad1.start && wobbleMotor.getCurrentPosition() < wobbleMotorZero)
+        // limits are currently hard-coded: removing the wobble motor manually will mess with this
+
+        if (wobbleMotor.getCurrentPosition() < lowWobLimit || wobbleMotor.getCurrentPosition() > highWobLimit) // if outside of range
+        {
+            if (wobbleMotor.getCurrentPosition() < lowWobLimit)
+            {
+                wobbleMotor.setPower(0.50); // self-correct position
+            }
+            if (wobbleMotor.getCurrentPosition() > highWobLimit)
+            {
+                wobbleMotor.setPower(-0.50); // self-correct position
+            }
+        }
+        else // if within acceptable range
+        {
+            if (gamepad1.start)
+            {
+                wobbleMotor.setPower(0.75);
+            }
+            if (gamepad1.back)
+            {
+                wobbleMotor.setPower(-0.75);
+            }
+            if (!gamepad1.start && !gamepad1.back) // do nothing
+            {
+                wobbleMotor.setPower(0.00);
+            }
+        }
+
+        /*
+        if (gamepad1.start && wobbleMotor.getCurrentPosition() < 65)
             wobbleMotor.setPower(0.75);
-        if (gamepad1.back && wobbleMotor.getCurrentPosition() > wobbleMotorZero - wobbleLimit)
+        if (gamepad1.back && wobbleMotor.getCurrentPosition() > -15)
             wobbleMotor.setPower(-0.75);
-        if (!gamepad1.start && !gamepad1.back)
+        if ((!gamepad1.start && !gamepad1.back) || wobbleMotor.getCurrentPosition() <= -15 || wobbleMotor.getCurrentPosition() >= 65)
             wobbleMotor.setPower(0.0);
+        */
+
         //wobbleMotor.setPower(wobbleSpeed);  //yeet
     }
 

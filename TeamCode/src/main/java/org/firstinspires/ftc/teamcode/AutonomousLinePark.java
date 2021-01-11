@@ -71,6 +71,40 @@ public class AutonomousLinePark extends LinearOpMode {
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
 
+    // variables regarding time
+    private long loopCount = 0;
+    private long initTime;
+    private long finalTime;
+
+    // strings relating to the voids we make for functions of the robot
+    private static final String D_FORWARD = "forward";
+    private static final String D_BACKWARD = "backward";
+    private static final String D_STOP = "stop";
+
+    public void drive (String fb)
+    {
+        if (fb.equals(D_FORWARD))
+        {
+            frontLeftMotor.setPower(0.3);
+            frontRightMotor.setPower(0.3);
+            backLeftMotor.setPower(0.3);
+            backRightMotor.setPower(0.3);
+        }
+        if (fb.equals(D_BACKWARD))
+        {
+            frontLeftMotor.setPower(-0.3);
+            frontRightMotor.setPower(-0.3);
+            backLeftMotor.setPower(-0.3);
+            backRightMotor.setPower(-0.3);
+        }
+        if (fb.equals(D_STOP))
+        {
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            backRightMotor.setPower(0);
+        }
+    }
 
     @Override
     public void runOpMode()
@@ -104,5 +138,32 @@ public class AutonomousLinePark extends LinearOpMode {
 
         // initial claw position
         ringServo.setPower(0.00);
+
+        telemetry.addData(">", "Press Play to start op mode");
+        telemetry.update();
+        waitForStart();
+
+        if (opModeIsActive())
+        {
+            initTime = System.currentTimeMillis();
+            while (opModeIsActive())
+            {
+                finalTime = System.currentTimeMillis() - initTime;
+                loopCount += 1;
+
+                telemetry.addData("Loop count:", +loopCount);
+                telemetry.addData("Time is:", finalTime);
+                telemetry.addData("Ms/loop", finalTime / loopCount);
+
+                if (finalTime > 0 && finalTime < 1500)
+                {
+                    drive(D_FORWARD);
+                }
+                if (finalTime > 1500)
+                {
+                    drive(D_STOP);
+                }
+            }
+        }
     }
 }

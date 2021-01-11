@@ -126,8 +126,8 @@ public class AutonomousLinePark extends LinearOpMode {
         //setting the direction for each motor
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         launchingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wobbleMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -155,11 +155,11 @@ public class AutonomousLinePark extends LinearOpMode {
                 telemetry.addData("Time is:", finalTime);
                 telemetry.addData("Ms/loop", finalTime / loopCount);
 
-                if (finalTime > 0 && finalTime < 1500)
+                if (finalTime > 0 && finalTime < 3000)
                 {
                     drive(D_FORWARD);
                 }
-                if (finalTime > 1500)
+                if (finalTime > 3000)
                 {
                     drive(D_STOP);
                 }

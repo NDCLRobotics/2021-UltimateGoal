@@ -155,11 +155,11 @@ public class AutonomousLinePark extends LinearOpMode {
                 telemetry.addData("Time is:", finalTime);
                 telemetry.addData("Ms/loop", finalTime / loopCount);
 
-                if (finalTime > 0 && finalTime < 3000)
+                if (finalTime > 0 && finalTime < 7500)
                 {
                     drive(D_FORWARD);
                 }
-                if (finalTime > 3000)
+                if (finalTime > 7500)
                 {
                     drive(D_STOP);
                 }

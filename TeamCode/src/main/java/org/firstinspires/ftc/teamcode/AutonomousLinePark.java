@@ -185,6 +185,15 @@ public class AutonomousLinePark extends LinearOpMode {
                 telemetry.addData("Time is:", finalTime);
                 telemetry.addData("Ms/loop", finalTime / loopCount);
 
+
+
+
+                // AUTONOMOUS TESTING LOG
+                // first trial: with left wheel directly on starting line
+                // results: turned instead of panning (bruh); 1000 ms intervals could likely be shortened;
+                //          spacing based on initial forward movement is correct; timing for launches using toggle are correct
+
+
                 if (finalTime > 0 && finalTime <= 6500)
                 {
                     drive(D_FORWARD);
@@ -209,7 +218,7 @@ public class AutonomousLinePark extends LinearOpMode {
                     pan(P_RIGHT); // reposition
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 10000 && finalTime <= 11000) 
+                if (finalTime > 10000 && finalTime <= 11000)
                 {
                     pan(P_STOP); // third launch
                     toggleServo.setPower(0.5);

@@ -80,6 +80,9 @@ public class AutonomousLinePark extends LinearOpMode {
     private static final String D_FORWARD = "forward";
     private static final String D_BACKWARD = "backward";
     private static final String D_STOP = "stop";
+    private static final String P_LEFT = "pan left";
+    private static final String P_RIGHT = "pan right";
+    private static final String P_STOP = "pan stop";
 
     public void drive (String fb)
     {
@@ -98,6 +101,31 @@ public class AutonomousLinePark extends LinearOpMode {
             backRightMotor.setPower(-0.3);
         }
         if (fb.equals(D_STOP))
+        {
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            backRightMotor.setPower(0);
+        }
+    }
+
+    public void pan (String lr)
+    {
+        if(lr.equals(P_RIGHT))
+        {
+            frontLeftMotor.setPower(-0.3);
+            frontRightMotor.setPower(0.3);
+            backLeftMotor.setPower(-0.3);
+            backRightMotor.setPower(0.3);
+        }
+        if(lr.equals(P_LEFT))
+        {
+            frontLeftMotor.setPower(0.3);
+            frontRightMotor.setPower(-0.3);
+            backLeftMotor.setPower(0.3);
+            backRightMotor.setPower(-0.3);
+        }
+        if(lr.equals(P_STOP))
         {
             frontLeftMotor.setPower(0);
             frontRightMotor.setPower(0);
@@ -146,6 +174,8 @@ public class AutonomousLinePark extends LinearOpMode {
         if (opModeIsActive())
         {
             initTime = System.currentTimeMillis();
+            launchingMotor.setPower(0.6);
+
             while (opModeIsActive())
             {
                 finalTime = System.currentTimeMillis() - initTime;
@@ -155,15 +185,38 @@ public class AutonomousLinePark extends LinearOpMode {
                 telemetry.addData("Time is:", finalTime);
                 telemetry.addData("Ms/loop", finalTime / loopCount);
 
-                if (finalTime > 0 && finalTime < 7500)
+                if (finalTime > 0 && finalTime <= 6500)
                 {
                     drive(D_FORWARD);
                 }
-                if (finalTime > 7500)
+                if (finalTime > 6500 && finalTime <= 7500)
                 {
-                    drive(D_STOP);
+                    drive(D_STOP); // first launch
+                    toggleServo.setPower(0.5);
+                }
+                if (finalTime > 7500 && finalTime <= 8000)
+                {
+                    pan(P_RIGHT); // reposition
+                    toggleServo.setPower(-0.5);
+                }
+                if (finalTime > 8000 && finalTime <= 9000)
+                {
+                    pan(P_STOP); // second launch
+                    toggleServo.setPower(0.5);
+                }
+                if (finalTime > 9000 && finalTime <= 9500)
+                {
+                    pan(P_RIGHT); // reposition
+                    toggleServo.setPower(-0.5);
+                }
+                if (finalTime > 10000 && finalTime <= 11000) 
+                {
+                    pan(P_STOP); // third launch
+                    toggleServo.setPower(0.5);
                 }
             }
         }
     }
 }
+
+//0.6 is the speed to hit powershot

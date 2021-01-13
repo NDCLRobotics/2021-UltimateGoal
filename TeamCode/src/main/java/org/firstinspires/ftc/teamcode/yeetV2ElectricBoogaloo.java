@@ -47,9 +47,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
     private double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
     private double frontLeftPan, frontRightPan, backLeftPan, backRightPan;
 
-    // scale down power from max for panning
-    private double panPower = powerScale + 0.2;
-
     // variables for wobble motor
     private double wobbleSpeed;
     private int wobbleMotorZero;
@@ -140,13 +137,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
             powerScale = 0.25;
         }
 
-        if (panPower > 1.0) {
-            panPower = 1.0;
-        }
-        else if (panPower < 0.25) {
-            panPower = 0.25;
-        }
-
         // linking the drive commands to the controller
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
@@ -158,10 +148,10 @@ public class yeetV2ElectricBoogaloo extends OpMode
             frontRightPan = Range.clip(drive + pan, -1.0, 1.0);
             backLeftPan = Range.clip(-drive - pan, -1.0, 1.0);
             backRightPan = Range.clip(-drive + pan, -1.0, 1.0);
-            frontLeftMotor.setPower(panPower * frontLeftPan);
-            frontRightMotor.setPower(panPower * frontRightPan);
-            backLeftMotor.setPower(panPower * backLeftPan);
-            backRightMotor.setPower(panPower * backRightPan);
+            frontLeftMotor.setPower(powerScale * frontLeftPan);
+            frontRightMotor.setPower(powerScale * frontRightPan);
+            backLeftMotor.setPower(powerScale * backLeftPan);
+            backRightMotor.setPower(powerScale * backRightPan);
         }
          // turning, capped at -1 and 1
         else {

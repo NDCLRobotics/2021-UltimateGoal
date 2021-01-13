@@ -76,6 +76,9 @@ public class AutonomousLinePark extends LinearOpMode {
     private long initTime;
     private long finalTime;
 
+    private boolean switching = true;
+    private long switchTime = 0;
+
     // strings relating to the voids we make for functions of the robot
     private static final String D_FORWARD = "forward";
     private static final String D_BACKWARD = "backward";
@@ -83,6 +86,9 @@ public class AutonomousLinePark extends LinearOpMode {
     private static final String P_LEFT = "pan left";
     private static final String P_RIGHT = "pan right";
     private static final String P_STOP = "pan stop";
+    private static final String T_LEFT = "turn left";
+    private static final String T_RIGHT = "turn right";
+    private static final String T_STOP = "turn stop";
 
     public void drive (String fb)
     {
@@ -113,19 +119,43 @@ public class AutonomousLinePark extends LinearOpMode {
     {
         if(lr.equals(P_RIGHT))
         {
+            frontLeftMotor.setPower(-0.5);
+            frontRightMotor.setPower(0.5);
+            backLeftMotor.setPower(0.5);
+            backRightMotor.setPower(-0.5);
+        }
+        if(lr.equals(P_LEFT))
+        {
+            frontLeftMotor.setPower(0.5);
+            frontRightMotor.setPower(-0.5);
+            backLeftMotor.setPower(-0.5);
+            backRightMotor.setPower(0.5);
+        }
+        if(lr.equals(P_STOP))
+        {
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            backRightMotor.setPower(0);
+        }
+    }
+    public void turn (String lr)
+    {
+        if(lr.equals(T_LEFT))
+        {
             frontLeftMotor.setPower(-0.3);
             frontRightMotor.setPower(0.3);
             backLeftMotor.setPower(-0.3);
             backRightMotor.setPower(0.3);
         }
-        if(lr.equals(P_LEFT))
+        if(lr.equals(T_RIGHT))
         {
             frontLeftMotor.setPower(0.3);
             frontRightMotor.setPower(-0.3);
             backLeftMotor.setPower(0.3);
             backRightMotor.setPower(-0.3);
         }
-        if(lr.equals(P_STOP))
+        if(lr.equals(T_STOP))
         {
             frontLeftMotor.setPower(0);
             frontRightMotor.setPower(0);
@@ -194,34 +224,74 @@ public class AutonomousLinePark extends LinearOpMode {
                 //          spacing based on initial forward movement is correct; timing for launches using toggle are correct
 
 
-                if (finalTime > 0 && finalTime <= 6500)
+                if (finalTime > 0 && finalTime <= 6250) // drive forward to position for launching
                 {
                     drive(D_FORWARD);
                 }
-                if (finalTime > 6500 && finalTime <= 7500)
+                if (finalTime > 6250 && finalTime <= 7500) // first launch
                 {
-                    drive(D_STOP); // first launch
+                    drive(D_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 7500 && finalTime <= 8000)
+                if (finalTime > 7500 && finalTime <= 7900) // reposition
                 {
-                    pan(P_RIGHT); // reposition
+                    pan(P_RIGHT);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 8000 && finalTime <= 9000)
+                if (finalTime > 7900 && finalTime <= 9000) // second launch
                 {
-                    pan(P_STOP); // second launch
+                    pan(P_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 9000 && finalTime <= 9500)
+                if (finalTime > 9000 && finalTime <= 9400) // reposition
                 {
-                    pan(P_RIGHT); // reposition
+                    pan(P_RIGHT);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 10000 && finalTime <= 11000)
+                if (finalTime > 9400 && finalTime <= 11000) // third launch
                 {
-                    pan(P_STOP); // third launch
+                    pan(P_STOP);
                     toggleServo.setPower(0.5);
+                }
+                if (finalTime > 11000 && finalTime <= 12000) // reset & move up to line
+                {
+                    drive(D_FORWARD);
+                    toggleServo.setPower(-0.5);
+                }
+                if (finalTime > 12000 && finalTime <= 12100)
+                {
+                    drive(D_STOP); // stop on line
+                }
+                if (finalTime > 12100 && finalTime <= 17000)
+                {
+                    // panning wants to curl clockwise for mechanical reasons,
+                    // so this is an attempt to counteract that
+
+                    // move left to target zone 1
+                    // turn first to attempt to correct angle, then pan left
+
+                    if (finalTime <= 12600)
+                    {
+                        turn(T_LEFT);
+                    }
+                    else
+                    {
+                        pan(P_LEFT);
+                    }
+                }
+                if (finalTime > 17000 && finalTime <= 21000)
+                {
+                    pan(P_STOP);
+                    // TODO: wobble motor drop wobble goal
+                }
+                if (finalTime > 21000 && finalTime <= 23000)
+                {
+                    // TODO: wobble motor stop
+                    turn(T_RIGHT);
+                }
+                if (finalTime > 23000)
+                {
+                    turn(T_STOP); // final stop
                 }
             }
         }

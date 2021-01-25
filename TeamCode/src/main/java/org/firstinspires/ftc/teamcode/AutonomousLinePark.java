@@ -117,19 +117,19 @@ public class AutonomousLinePark extends LinearOpMode {
 
     public void pan (String lr)
     {
-        if(lr.equals(P_RIGHT))
-        {
-            frontLeftMotor.setPower(-0.5);
-            frontRightMotor.setPower(0.5);
-            backLeftMotor.setPower(0.5);
-            backRightMotor.setPower(-0.5);
-        }
         if(lr.equals(P_LEFT))
         {
-            frontLeftMotor.setPower(0.5);
-            frontRightMotor.setPower(-0.5);
-            backLeftMotor.setPower(-0.5);
-            backRightMotor.setPower(0.5);
+            frontLeftMotor.setPower(-0.3);
+            frontRightMotor.setPower(0.3);
+            backLeftMotor.setPower(0.3);
+            backRightMotor.setPower(-0.3);
+        }
+        if(lr.equals(P_RIGHT))
+        {
+            frontLeftMotor.setPower(0.3);
+            frontRightMotor.setPower(-0.3);
+            backLeftMotor.setPower(-0.3);
+            backRightMotor.setPower(0.3);
         }
         if(lr.equals(P_STOP))
         {
@@ -233,53 +233,40 @@ public class AutonomousLinePark extends LinearOpMode {
                     drive(D_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 7500 && finalTime <= 7900) // reposition
+                if (finalTime > 7500 && finalTime <= 8300) // reposition
                 {
-                    pan(P_RIGHT);
+                    pan(P_LEFT);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 7900 && finalTime <= 9000) // second launch
+                if (finalTime > 8300 && finalTime <= 9400) // second launch
                 {
                     pan(P_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 9000 && finalTime <= 9400) // reposition
+                if (finalTime > 9400 && finalTime <= 10400) // reposition
                 {
-                    pan(P_RIGHT);
+                    pan(P_LEFT);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 9400 && finalTime <= 11000) // third launch
+                if (finalTime > 10400 && finalTime <= 10900) // third launch
                 {
                     pan(P_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 11000 && finalTime <= 12000) // reset & move up to line
+                if (finalTime > 10900 && finalTime <= 11900) // reset & move up to line
                 {
                     drive(D_FORWARD);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 12000 && finalTime <= 12100)
+                if (finalTime > 11900 && finalTime <= 12100)
                 {
                     drive(D_STOP); // stop on line
                 }
-                if (finalTime > 12100 && finalTime <= 17000)
+                if (finalTime > 12100 && finalTime <= 15500)
                 {
-                    // panning wants to curl clockwise for mechanical reasons,
-                    // so this is an attempt to counteract that
-
-                    // move left to target zone 1
-                    // turn first to attempt to correct angle, then pan left
-
-                    if (finalTime <= 12600)
-                    {
-                        turn(T_LEFT);
-                    }
-                    else
-                    {
-                        pan(P_LEFT);
-                    }
+                   pan(P_LEFT);
                 }
-                if (finalTime > 17000 && finalTime <= 21000)
+                if (finalTime > 15500 && finalTime <= 21000)
                 {
                     pan(P_STOP);
                     // TODO: wobble motor drop wobble goal

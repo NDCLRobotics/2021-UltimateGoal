@@ -49,11 +49,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
     // variables for wobble motor
     private double wobbleSpeed;
-    private int wobbleMotorZero;
-    private int wobbleLimit = 20000;
-
-    private int lowWobLimit = -15;
-    private int highWobLimit = 65;
 
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
@@ -84,8 +79,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
         launchingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         wobbleMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        wobbleMotorZero = wobbleMotor.getCurrentPosition();
-
         // message displayed on the phone before initialization
         telemetry.addData("say: ", "Working, latest updated: never lol");
 
@@ -106,9 +99,10 @@ public class yeetV2ElectricBoogaloo extends OpMode
         telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
         telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
-        telemetry.addData("say:", "Current wobble motor position: " + wobbleMotor.getCurrentPosition());
-        telemetry.addData("say:", "Wobble motor zero at: " + wobbleMotorZero);
-        telemetry.addData("say:", "Wobble motor power at: " + wobbleMotor.getPower());
+        telemetry.addData("say:", "Wobble motor current position: " + wobbleMotor.getCurrentPosition());
+        telemetry.addData("say:", "Is wobble motor busy? " + wobbleMotor.isBusy());
+        telemetry.addData("say:", "Current wobble motor mode: " + wobbleMotor.getMode());
+
 
 
         // increase or decrease powerScale
@@ -140,7 +134,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         // linking the drive commands to the controller
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-        double pan = gamepad1.left_stick_x;
+        double pan = -gamepad1.left_stick_x;
 
         // panning, capped at -1 and 1
         if ((gamepad1.dpad_left || gamepad1.dpad_right) || StrictMath.abs(gamepad1.left_stick_x) > StrictMath.abs(gamepad1.right_stick_x)) {
@@ -244,32 +238,32 @@ public class yeetV2ElectricBoogaloo extends OpMode
         // wobble motor
         // limits are currently hard-coded: removing the wobble motor manually will mess with this
 
-        if (wobbleMotor.getCurrentPosition() < lowWobLimit || wobbleMotor.getCurrentPosition() > highWobLimit) // if outside of range
+
+        if (gamepad1.start && !gamepad1.back)// && wobbleMotor.getCurrentPosition() > -3100) // go up
         {
-            if (wobbleMotor.getCurrentPosition() < lowWobLimit)
-            {
-                wobbleMotor.setPower(0.50); // self-correct position
-            }
-            if (wobbleMotor.getCurrentPosition() > highWobLimit)
-            {
-                wobbleMotor.setPower(-0.50); // self-correct position
-            }
+            wobbleMotor.setPower(-0.55);
         }
-        else // if within acceptable range
+        /*else if (wobbleMotor.getCurrentPosition() <= -3100) // limit (carrying)
         {
-            if (gamepad1.start)
-            {
-                wobbleMotor.setPower(0.75);
-            }
-            if (gamepad1.back)
-            {
-                wobbleMotor.setPower(-0.75);
-            }
-            if (!gamepad1.start && !gamepad1.back) // do nothing
-            {
-                wobbleMotor.setPower(0.00);
-            }
+            wobbleMotor.setPower(0.0);
+        }*/
+
+        if (gamepad1.back && !gamepad1.start)// && wobbleMotor.getCurrentPosition() < 100) // go down
+        {
+            wobbleMotor.setPower(0.55);
         }
+        /*else if (wobbleMotor.getCurrentPosition() >= 100) // limit (horizontal)
+        {
+            wobbleMotor.setPower(0.0);
+        }*/
+
+        if (!gamepad1.back && !gamepad1.start)
+        {
+            wobbleMotor.setPower(0);
+        }
+
+
+    }
 
         /*
         if (gamepad1.start && wobbleMotor.getCurrentPosition() < 65)
@@ -281,7 +275,6 @@ public class yeetV2ElectricBoogaloo extends OpMode
         */
 
         //wobbleMotor.setPower(wobbleSpeed);  //yeet
-    }
 
     @Override
     public void stop()

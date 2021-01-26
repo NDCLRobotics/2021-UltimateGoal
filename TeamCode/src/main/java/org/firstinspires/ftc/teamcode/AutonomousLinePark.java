@@ -89,6 +89,9 @@ public class AutonomousLinePark extends LinearOpMode {
     private static final String T_LEFT = "turn left";
     private static final String T_RIGHT = "turn right";
     private static final String T_STOP = "turn stop";
+    private static final String W_UP = "wobble up";
+    private static final String W_DOWN = "wobble down";
+    private static final String W_STOP = "wobble stop";
 
     public void drive (String fb)
     {
@@ -163,7 +166,21 @@ public class AutonomousLinePark extends LinearOpMode {
             backRightMotor.setPower(0);
         }
     }
-
+    public void wobble (String lr)
+    {
+        if(lr.equals(W_UP))
+        {
+            wobbleMotor.setPower(-0.55);
+        }
+        if(lr.equals(W_DOWN))
+        {
+           wobbleMotor.setPower(0.55);
+        }
+        if(lr.equals(W_STOP))
+        {
+            wobbleMotor.setPower(0.0);
+        }
+    }
     @Override
     public void runOpMode()
     {
@@ -227,6 +244,15 @@ public class AutonomousLinePark extends LinearOpMode {
                 if (finalTime > 0 && finalTime <= 6250) // drive forward to position for launching
                 {
                     drive(D_FORWARD);
+
+                    if (finalTime <= 300)
+                    {
+                        wobble(W_DOWN);
+                    }
+                    else
+                    {
+                        wobble(W_STOP);
+                    }
                 }
                 if (finalTime > 6250 && finalTime <= 7500) // first launch
                 {
@@ -253,32 +279,37 @@ public class AutonomousLinePark extends LinearOpMode {
                     pan(P_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 10900 && finalTime <= 11900) // reset & move up to line
+                if (finalTime > 10900 && finalTime <= 12500) // reset & move up to line
                 {
                     drive(D_FORWARD);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 11900 && finalTime <= 12100)
+                if (finalTime > 12500 && finalTime <= 12700)
                 {
                     drive(D_STOP); // stop on line
                 }
-                if (finalTime > 12100 && finalTime <= 15500)
+                if (finalTime > 12800 && finalTime <= 15300)
                 {
                    pan(P_LEFT);
                 }
-                if (finalTime > 15500 && finalTime <= 21000)
+                if (finalTime > 15300 && finalTime <= 17300)
                 {
                     pan(P_STOP);
-                    // TODO: wobble motor drop wobble goal
+                    wobble(W_DOWN);
                 }
-                if (finalTime > 21000 && finalTime <= 23000)
+                if (finalTime > 17300 && finalTime <= 19100)
                 {
-                    // TODO: wobble motor stop
+                    wobble(W_STOP);
                     turn(T_RIGHT);
                 }
-                if (finalTime > 23000)
+                if (finalTime > 19100 && finalTime <= 20300)
                 {
-                    turn(T_STOP); // final stop
+                    turn(T_STOP);
+                    wobble(W_UP);
+                }
+                if (finalTime > 20300)
+                {
+                    wobble(W_STOP); // final stop
                 }
             }
         }

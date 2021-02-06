@@ -292,22 +292,27 @@ public class AutonomousLinePark extends LinearOpMode {
                 {
                    pan(P_LEFT);
                 }
-                if (finalTime > 15300 && finalTime <= 17300)
+                if (finalTime > 15300 && finalTime <= 16300)
                 {
                     pan(P_STOP);
+                    turn(T_RIGHT);
+                }
+                if (finalTime > 16300 && finalTime <= 18300)
+                {
+                    turn(T_STOP);
                     wobble(W_DOWN);
                 }
-                if (finalTime > 17300 && finalTime <= 19100)
+                if (finalTime > 18300 && finalTime <= 20000)
                 {
                     wobble(W_STOP);
                     turn(T_RIGHT);
                 }
-                if (finalTime > 19100 && finalTime <= 20300)
+                if (finalTime > 20000 && finalTime <= 21500)
                 {
                     turn(T_STOP);
                     wobble(W_UP);
                 }
-                if (finalTime > 20300)
+                if (finalTime > 21500)
                 {
                     wobble(W_STOP); // final stop
                 }

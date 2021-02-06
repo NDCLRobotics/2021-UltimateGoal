@@ -38,6 +38,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // servo related booleans
     private boolean toggleBool = false;
 
+    // boolean for starting the auto- ring lift/deposit
+    private boolean autoGrabbing = false;
+
     // scale down power from max for driving
     private double powerScale = 0.75;
     private double launchPowerScale = 0.5;
@@ -50,8 +53,59 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // variables for wobble motor
     private double wobbleSpeed;
 
+    // frame counter
+    private long currentFrame;
+    private long startFrame;
+
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
+
+
+    // function to do the following from a single button press:
+    //  grab with ring claw
+    //  raise ring claw
+    //  release ring claw
+    //  lower ring claw
+    private void autoGrab()
+    {
+        long grabTime = 230; // how long it takes to grab
+        long raiseTime = grabTime + 230; // how long it takes to raise
+        long releaseTime = raiseTime + 50; // how long it takes to release & Lower
+        long lowerTime = releaseTime + 100; // how long it takes to lower
+
+        telemetry.addData("say:", "autograb");
+
+
+        if (currentFrame > startFrame && currentFrame <= startFrame + grabTime) // grabbing
+        {
+            ringServo.setPower(0.12);
+            telemetry.addData("say:", "autograb grabbing");
+
+        }
+        if (currentFrame > startFrame + grabTime && currentFrame <= startFrame + raiseTime) // raising
+        {
+            flipServo.setPower(-0.25);
+            telemetry.addData("say:", "autograb raising");
+
+        }
+        if (currentFrame > startFrame + raiseTime && currentFrame <= startFrame + releaseTime) // release
+        {
+            ringServo.setPower(-0.06);
+            telemetry.addData("say:", "autograb releasing");
+        }
+        if (currentFrame > startFrame + releaseTime && currentFrame <= startFrame + lowerTime) // lower
+        {
+            flipServo.setPower(-0.05);
+            telemetry.addData("say:", "autograb lowering");
+
+        }
+        if (currentFrame >  startFrame + lowerTime)
+        {
+            // stop
+            autoGrabbing = false;
+            telemetry.addData("say:", "autograb end");
+        }
+    }
 
 
 
@@ -84,7 +138,8 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         // initial claw position
         ringServo.setPower(0.00);
-
+        currentFrame = 0;
+        startFrame = 0;
     }
 
     @Override
@@ -96,13 +151,16 @@ public class yeetV2ElectricBoogaloo extends OpMode
     public void loop() {
 
         // messages displayed on the phone while running
-        telemetry.addData("say:", "Working. Last Updated: never lol ex dee");
+        telemetry.addData("say:", "Working. Last Updated: never lol ecks dee");
         telemetry.addData("say:", "Power Scale equals: " + powerScale);
         telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
         telemetry.addData("say:", "Wobble motor current position: " + wobbleMotor.getCurrentPosition());
-        telemetry.addData("say:", "Is wobble motor busy? " + wobbleMotor.isBusy());
-        telemetry.addData("say:", "Current wobble motor mode: " + wobbleMotor.getMode());
+        telemetry.addData("say:", "Current frame: " + currentFrame);
+        telemetry.addData("say:", "Start frame: " + startFrame);
 
+
+        // increment the frame counter
+        currentFrame += 1;
 
 
         // increase or decrease powerScale
@@ -262,6 +320,25 @@ public class yeetV2ElectricBoogaloo extends OpMode
             wobbleMotor.setPower(0);
         }
 
+
+
+        if (gamepad1.a || autoGrabbing) // start auto grab function
+        {
+            telemetry.addData("say:", "A button press");
+
+            if (!autoGrabbing)
+            {
+                startFrame = currentFrame;
+            }
+
+            autoGrabbing = true;
+            autoGrab();
+        }
+
+        if (gamepad1.x) // cancel auto grab function
+        {
+            autoGrabbing = false;
+        }
 
     }
 

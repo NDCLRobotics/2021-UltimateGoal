@@ -40,6 +40,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
     // boolean for starting the auto- ring lift/deposit
     private boolean autoGrabbing = false;
+    private boolean autoFlicking = false;
 
     // scale down power from max for driving
     private double powerScale = 0.75;
@@ -55,7 +56,8 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
     // frame counter
     private long currentFrame;
-    private long startFrame;
+    private long startGrabFrame;
+    private long startFlickFrame;
 
     // temporary variable for testing
     private double tempTestingVariable = 0.0;
@@ -73,37 +75,45 @@ public class yeetV2ElectricBoogaloo extends OpMode
         long releaseTime = raiseTime + 50; // how long it takes to release & Lower
         long lowerTime = releaseTime + 100; // how long it takes to lower
 
-        telemetry.addData("say:", "autograb");
 
-
-        if (currentFrame > startFrame && currentFrame <= startFrame + grabTime) // grabbing
+        if (currentFrame > startGrabFrame && currentFrame <= startGrabFrame + grabTime) // grabbing
         {
             ringServo.setPower(0.12);
-            telemetry.addData("say:", "autograb grabbing");
-
         }
-        if (currentFrame > startFrame + grabTime && currentFrame <= startFrame + raiseTime) // raising
+        if (currentFrame > startGrabFrame + grabTime && currentFrame <= startGrabFrame + raiseTime) // raising
         {
             flipServo.setPower(-0.25);
-            telemetry.addData("say:", "autograb raising");
-
         }
-        if (currentFrame > startFrame + raiseTime && currentFrame <= startFrame + releaseTime) // release
+        if (currentFrame > startGrabFrame + raiseTime && currentFrame <= startGrabFrame + releaseTime) // release
         {
             ringServo.setPower(-0.06);
-            telemetry.addData("say:", "autograb releasing");
         }
-        if (currentFrame > startFrame + releaseTime && currentFrame <= startFrame + lowerTime) // lower
+        if (currentFrame > startGrabFrame + releaseTime && currentFrame <= startGrabFrame + lowerTime) // lower
         {
             flipServo.setPower(-0.05);
-            telemetry.addData("say:", "autograb lowering");
-
         }
-        if (currentFrame >  startFrame + lowerTime)
+        if (currentFrame >  startGrabFrame + lowerTime)
         {
             // stop
             autoGrabbing = false;
-            telemetry.addData("say:", "autograb end");
+        }
+    }
+
+    private void autoFlick()
+    {
+        long pushTime = 50; // how long it takes to push
+        telemetry.addData("say:", "AutoFlick");
+
+        if (currentFrame > startFlickFrame && currentFrame <= startFlickFrame + pushTime) // pushing
+        {
+            toggleServo.setPower(0.5);
+            telemetry.addData("say:", "AutoFlick Forward");
+        }
+        if (currentFrame >  startFlickFrame + pushTime) // retracting & stopping task
+        {
+            toggleServo.setPower(-0.5);
+            autoFlicking = false;
+            telemetry.addData("say:", "Ending AutoFlick");
         }
     }
 
@@ -139,7 +149,8 @@ public class yeetV2ElectricBoogaloo extends OpMode
         // initial claw position
         ringServo.setPower(0.00);
         currentFrame = 0;
-        startFrame = 0;
+        startGrabFrame = 0;
+        startFlickFrame = 0;
     }
 
     @Override
@@ -156,7 +167,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         telemetry.addData("say:", "High Launcher Speed equals: " + highLaunchPowerScale);
         telemetry.addData("say:", "Wobble motor current position: " + wobbleMotor.getCurrentPosition());
         telemetry.addData("say:", "Current frame: " + currentFrame);
-        telemetry.addData("say:", "Start frame: " + startFrame);
+        telemetry.addData("say:", "Start frame: " + startGrabFrame);
 
 
         // increment the frame counter
@@ -253,6 +264,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         launchingMotor.setPower(launchPowerScale);
 
+        /*
         // toggleServo
         if (gamepad1.left_trigger > 0 && !toggleSwitching)
             toggleBool = !toggleBool;
@@ -264,6 +276,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
             toggleServo.setPower(0.5);
         else
             toggleServo.setPower(-0.5);
+        */
 
         // flipServo and ringServo
         if (gamepad1.b)
@@ -324,11 +337,10 @@ public class yeetV2ElectricBoogaloo extends OpMode
 
         if (gamepad1.a || autoGrabbing) // start auto grab function
         {
-            telemetry.addData("say:", "A button press");
 
             if (!autoGrabbing)
             {
-                startFrame = currentFrame;
+                startGrabFrame = currentFrame;
             }
 
             autoGrabbing = true;
@@ -338,6 +350,18 @@ public class yeetV2ElectricBoogaloo extends OpMode
         if (gamepad1.x) // cancel auto grab function
         {
             autoGrabbing = false;
+        }
+
+
+        if (gamepad1.left_trigger > 0 || autoFlicking)
+        {
+            if (!autoFlicking)
+            {
+               startFlickFrame = currentFrame;
+            }
+
+            autoFlicking = true;
+            autoFlick();
         }
 
     }

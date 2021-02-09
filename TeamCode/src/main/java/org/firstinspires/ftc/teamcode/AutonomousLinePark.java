@@ -241,11 +241,48 @@ public class AutonomousLinePark extends LinearOpMode {
                 //          spacing based on initial forward movement is correct; timing for launches using toggle are correct
 
 
-                if (finalTime > 0 && finalTime <= 6250) // drive forward to position for launching
+                int drive1 = 6250;
+                int wobbleDown1 = 300;
+                int launch1 = drive1 + 1250;
+                int reposition1 = launch1 + 800;
+                int launch2 = reposition1 + 1100;
+                int reposition2 = launch2 + 1000;
+                int launch3 = reposition2 + 500;
+                int drive2 = launch3 + 1600;
+                int stop1 = drive2 + 200;
+                int pan1 = stop1 + 2500;
+                int turn1 = pan1 + 1000;
+                int wobbleDown2 = turn1 + 2000;
+                int turn2 = wobbleDown2 + 1700;
+                int wobbleUp1 = turn2 + 1500;
+
+
+                // organize commands into a list for easier calls below
+                List<Integer> commands = new ArrayList<Integer>();
+                commands.add(drive1);
+                commands.add(wobbleDown1);
+                commands.add(launch1);
+                commands.add(reposition1);
+                commands.add(launch2);
+                commands.add(reposition2);
+                commands.add(launch3);
+                commands.add(drive2);
+                commands.add(stop1);
+                commands.add(pan1);
+                commands.add(turn1);
+                commands.add(wobbleDown2);
+                commands.add(turn2);
+                commands.add(wobbleUp1);
+
+                // Inefficiency (tm)
+                Integer[] c = commands.toArray(new Integer[0]); // convert list to array for indexing
+
+
+                if (finalTime > 0 && finalTime <= c[0]) // drive forward to position for launching
                 {
                     drive(D_FORWARD);
 
-                    if (finalTime <= 300)
+                    if (finalTime <= c[1])
                     {
                         wobble(W_DOWN);
                     }
@@ -254,65 +291,65 @@ public class AutonomousLinePark extends LinearOpMode {
                         wobble(W_STOP);
                     }
                 }
-                if (finalTime > 6250 && finalTime <= 7500) // first launch
+                if (finalTime > c[0] && finalTime <= c[2]) // first launch
                 {
                     drive(D_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 7500 && finalTime <= 8300) // reposition
+                if (finalTime > c[2] && finalTime <= c[3]) // reposition
                 {
                     pan(P_LEFT);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 8300 && finalTime <= 9400) // second launch
+                if (finalTime > c[3] && finalTime <= c[4]) // second launch
                 {
                     pan(P_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 9400 && finalTime <= 10400) // reposition
+                if (finalTime > c[4] && finalTime <= c[5]) // reposition
                 {
                     pan(P_LEFT);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 10400 && finalTime <= 10900) // third launch
+                if (finalTime > c[5] && finalTime <= c[6]) // third launch
                 {
                     pan(P_STOP);
                     toggleServo.setPower(0.5);
                 }
-                if (finalTime > 10900 && finalTime <= 12500) // reset & move up to line
+                if (finalTime > c[6] && finalTime <= c[7]) // reset & move up to line
                 {
                     drive(D_FORWARD);
                     toggleServo.setPower(-0.5);
                 }
-                if (finalTime > 12500 && finalTime <= 12700)
+                if (finalTime > c[7] && finalTime <= c[8])
                 {
                     drive(D_STOP); // stop on line
                 }
-                if (finalTime > 12800 && finalTime <= 15300)
+                if (finalTime > c[8] && finalTime <= c[9])
                 {
                    pan(P_LEFT);
                 }
-                if (finalTime > 15300 && finalTime <= 16300)
+                if (finalTime > c[9] && finalTime <= c[10])
                 {
                     pan(P_STOP);
                     turn(T_RIGHT);
                 }
-                if (finalTime > 16300 && finalTime <= 18300)
+                if (finalTime > c[10] && finalTime <= c[11])
                 {
                     turn(T_STOP);
                     wobble(W_DOWN);
                 }
-                if (finalTime > 18300 && finalTime <= 20000)
+                if (finalTime > c[11] && finalTime <= c[12])
                 {
                     wobble(W_STOP);
                     turn(T_RIGHT);
                 }
-                if (finalTime > 20000 && finalTime <= 21500)
+                if (finalTime > c[12] && finalTime <= c[13])
                 {
                     turn(T_STOP);
                     wobble(W_UP);
                 }
-                if (finalTime > 21500)
+                if (finalTime > c[13])
                 {
                     wobble(W_STOP); // final stop
                 }

@@ -45,7 +45,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // scale down power from max for driving
     private double powerScale = 0.75;
     private double launchPowerScale = 0.5;
-    private double highLaunchPowerScale = 0.9;
+    private double highLaunchPowerScale = 0.8;
 
     // doubles for driving and panning
     private double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
@@ -71,7 +71,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
     private void autoGrab()
     {
         long grabTime = 230; // how long it takes to grab
-        long raiseTime = grabTime + 230; // how long it takes to raise
+        long raiseTime = grabTime + 150; // how long it takes to raise
         long releaseTime = raiseTime + 50; // how long it takes to release & Lower
         long lowerTime = releaseTime + 100; // how long it takes to lower
 
@@ -82,7 +82,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
         if (currentFrame > startGrabFrame + grabTime && currentFrame <= startGrabFrame + raiseTime) // raising
         {
-            flipServo.setPower(-0.25);
+            flipServo.setPower(-0.80);
         }
         if (currentFrame > startGrabFrame + raiseTime && currentFrame <= startGrabFrame + releaseTime) // release
         {
@@ -90,7 +90,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
         if (currentFrame > startGrabFrame + releaseTime && currentFrame <= startGrabFrame + lowerTime) // lower
         {
-            flipServo.setPower(-0.05);
+            flipServo.setPower(0.85);
         }
         if (currentFrame >  startGrabFrame + lowerTime)
         {
@@ -283,12 +283,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
         {
             if (gamepad1.left_bumper) // lifted claw
             {
-                flipServo.setPower(-0.25);
+                flipServo.setPower(-0.80);
                 telemetry.addData("say:", "A");
             }
             if (gamepad1.right_bumper) // lowered claw
             {
-                flipServo.setPower(-0.05);
+                flipServo.setPower(0.85);
                 telemetry.addData("say:", "B");
             }
         }

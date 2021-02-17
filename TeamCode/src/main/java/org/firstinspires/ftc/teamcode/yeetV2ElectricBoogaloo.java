@@ -240,12 +240,12 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
         if (gamepad1.dpad_left && !launchSwitching)
         {
-            highLaunchPowerScale -= 0.1;
+            highLaunchPowerScale -= 0.2;
             launchSwitching = true;
         }
         else if (gamepad1.dpad_right && !launchSwitching)
         {
-            highLaunchPowerScale += 0.1;
+            highLaunchPowerScale += 0.2;
             launchSwitching = true;
         }
         else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
@@ -257,9 +257,9 @@ public class yeetV2ElectricBoogaloo extends OpMode
         {
             highLaunchPowerScale = 1.0;
         }
-        else if (highLaunchPowerScale < 0.1)
+        else if (highLaunchPowerScale < -0.2)
         {
-            highLaunchPowerScale = 0.1;
+            highLaunchPowerScale = -0.2;
         }
 
         launchingMotor.setPower(launchPowerScale);

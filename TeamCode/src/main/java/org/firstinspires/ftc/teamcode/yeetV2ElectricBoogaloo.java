@@ -45,7 +45,7 @@ public class yeetV2ElectricBoogaloo extends OpMode
     // scale down power from max for driving
     private double powerScale = 0.75;
     private double launchPowerScale = 0.5;
-    private double highLaunchPowerScale = 0.8;
+    private double highLaunchPowerScale = 0.7;
 
     // doubles for driving and panning
     private double frontLeftPower, frontRightPower, backLeftPower, backRightPower;
@@ -240,27 +240,44 @@ public class yeetV2ElectricBoogaloo extends OpMode
         }
         if (gamepad1.dpad_left && !launchSwitching)
         {
-            highLaunchPowerScale -= 0.2;
+            if (highLaunchPowerScale == 0.7)
+            {
+                highLaunchPowerScale = 0.65;
+            }
+            else if (highLaunchPowerScale == 0.65)
+            {
+                highLaunchPowerScale = -0.4;
+            }
             launchSwitching = true;
         }
         else if (gamepad1.dpad_right && !launchSwitching)
         {
-            highLaunchPowerScale += 0.2;
+            if (highLaunchPowerScale == 0.65)
+            {
+                highLaunchPowerScale = 0.7;
+            }
+            else if (highLaunchPowerScale == -0.4)
+            {
+                highLaunchPowerScale = 0.65;
+            }
             launchSwitching = true;
         }
         else if (!gamepad1.dpad_left && !gamepad1.dpad_right && launchSwitching)
         {
             launchSwitching = false;
         }
+
+        /*
         // clamp launchScale to [0.1,1.0]
         if (highLaunchPowerScale > 1.0)
         {
             highLaunchPowerScale = 1.0;
         }
-        else if (highLaunchPowerScale < -0.2)
+        else if (highLaunchPowerScale < -0.4)
         {
-            highLaunchPowerScale = -0.2;
+            highLaunchPowerScale = -0.4;
         }
+        */
 
         launchingMotor.setPower(launchPowerScale);
 

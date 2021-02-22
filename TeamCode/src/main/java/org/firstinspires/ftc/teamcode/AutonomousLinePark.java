@@ -251,7 +251,7 @@ public class AutonomousLinePark extends LinearOpMode {
                 int drive2 = launch3 + 1600;
                 int stop1 = drive2 + 200;
                 int pan1 = stop1 + 2500;
-                int turn1 = pan1 + 1000;
+                int turn1 = pan1 + 800;
                 int wobbleDown2 = turn1 + 2000;
                 int turn2 = wobbleDown2 + 1700;
                 int wobbleUp1 = turn2 + 1500;
